@@ -15,7 +15,7 @@ export class DashboardComponent implements OnInit {
   pythonRecords:Array<any>;
   htmlRecords:Array<any>;
   jsRecords:Array<any>;
-  python:Array<Record>;
+  python:Array<Record>; //yeh kaisa naam hai?
   students:Array<any>;
   html:Array<Record>;
   js:Array<Record>;
@@ -26,9 +26,17 @@ export class DashboardComponent implements OnInit {
   jsExercises:Array<any>;
   studentSubmissions:any;
   selectedStudent:string;
+  showTable:boolean;
+  jsTable:Object;
+  studentExerciseGrid:Object;
+  exerciseKeys:Array<string>;
+
 
   constructor(private airtableService:AirtableService) { 
     this.exerciseNames={};
+    this.showTable=false;
+    this.jsTable={};
+    this.studentExerciseGrid={};
    }
   
   ngOnInit() {
@@ -37,17 +45,18 @@ export class DashboardComponent implements OnInit {
         this.Map2(this.jsExercises);
         this.airtableService.getJsSubmissions().subscribe(records=>this.jsRecords=records,
       (error)=>{},()=>this.js=this.findUnique(this.jsRecords));
-  });
+    });
 
     this.airtableService.getPythonExercises().subscribe(records=>this.pythonExercises=records,
       (error)=>{},()=> {
         this.Map2(this.pythonExercises);
         this.airtableService.getPythonSubmissions().subscribe(records=>this.pythonRecords=records,
-      (error)=>{},()=>this.python=this.findUnique(this.pythonRecords));
+      (error)=>{},()=>{this.python=this.findUnique(this.pythonRecords);});
       });
 
     this.airtableService.getStudents().subscribe(records=>this.students=records,(error)=>{},()=>
       { 
+        console.log(this.students);
         this.studentNames=this.Map1(this.students);
       });
 
@@ -75,6 +84,7 @@ export class DashboardComponent implements OnInit {
       let id=students[i].id;
       this.exerciseNames[id]=n;
     }
+    this.exerciseKeys = this.getExerciseKeys();
   }
 
   findUnique(records:Array<any>):Array<any> {
@@ -84,12 +94,21 @@ export class DashboardComponent implements OnInit {
   		if(!dict[records[i].fields.Student]) {
   			dict[records[i].fields.Student]=true;
   			let name=this.studentNames[records[i].fields.Student];
+
   			let time=moment(records[i].fields["Submission Date & Time"]).fromNow(); 
   			let studentId=records[i].fields.Student[0];
         let exerciseName=this.exerciseNames[records[i].fields.Exercise[0]];
+
+        // if(this.jsTable[name] == undefined) {
+        //   this.jsTable[name]={};
+        // }
+
+        // this.jsTable[name][exerciseName]=1;
+
   			finalResult.push({	Name:name, Time:time, Id:studentId, ExerciseName:exerciseName});
   		}
   	}
+    console.log(this.jsTable);
   	return finalResult;
 	}
 
@@ -130,4 +149,51 @@ export class DashboardComponent implements OnInit {
         this.studentSubmissions[i]["ExerciseName"]=this.exerciseNames[this.studentSubmissions[i]["Exercise"][0]];
       }  
     }
+
+  toggleTableView() {
+    if(this.showTable)
+      this.showTable=false;
+    else {
+      this.showStudentExerciseGrid();
+      this.showTable=true;
+    }
+    console.log("eh");
+  }
+
+  getDictionary(records:Array<any>):void {
+
+    for (let i=0; i<records.length; i++) {
+      let studentName = records[i].fields['Student'][0];
+      let exerciseName = records[i].fields['Exercise'][0];
+      let approvalSatus = records[i].fields['Approval Status'];
+
+      if (this.studentExerciseGrid[studentName]===undefined) {
+        this.studentExerciseGrid[studentName] = {};
+      }
+
+      if (this.studentExerciseGrid[studentName][exerciseName]!="approved") {
+        if (approvalSatus == undefined)
+          approvalSatus = "notapproved";
+        else
+          approvalSatus = "approved"
+
+        this.studentExerciseGrid[studentName][exerciseName] = approvalSatus;
+      }
+    }
+  }
+
+  showStudentExerciseGrid() {
+    this.getDictionary(this.pythonRecords);
+    this.getDictionary(this.htmlRecords);
+    this.getDictionary(this.jsRecords);
+  }
+
+  getStudentKeys(): Array<string> {
+    return Object.keys(this.studentNames);
+  }
+
+  getExerciseKeys(): Array<string> {
+    //seqence karke bhejo
+    return Object.keys(this.exerciseNames);
+  }
 }
