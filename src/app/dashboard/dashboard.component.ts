@@ -108,7 +108,6 @@ export class DashboardComponent implements OnInit {
   			finalResult.push({	Name:name, Time:time, Id:studentId, ExerciseName:exerciseName});
   		}
   	}
-    console.log(this.jsTable);
   	return finalResult;
 	}
 
