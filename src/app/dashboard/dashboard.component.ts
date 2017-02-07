@@ -12,13 +12,13 @@ import * as moment from 'moment';
 })
 
 export class DashboardComponent implements OnInit {
+  students:Array<any>;
   pythonRecords:Array<any>;
   htmlRecords:Array<any>;
   jsRecords:Array<any>;
-  python:Array<Record>; //yeh kaisa naam hai?
-  students:Array<any>;
-  html:Array<Record>;
-  js:Array<Record>;
+  recentPython:Array<Record>;
+  recentHtml:Array<Record>;
+  recentJs:Array<Record>;
   studentNames:Array<any>;
   exerciseNames:any;
   pythonExercises:Array<any>;
@@ -27,7 +27,6 @@ export class DashboardComponent implements OnInit {
   studentSubmissions:any;
   selectedStudent:string;
   showTable:boolean;
-  jsTable:Object;
   studentExerciseGrid:Object;
   exerciseKeys:Array<string>;
 
@@ -35,7 +34,6 @@ export class DashboardComponent implements OnInit {
   constructor(private airtableService:AirtableService) { 
     this.exerciseNames={};
     this.showTable=false;
-    this.jsTable={};
     this.studentExerciseGrid={};
    }
   
@@ -43,15 +41,21 @@ export class DashboardComponent implements OnInit {
     this.airtableService.getJsExercises().subscribe(records=>this.jsExercises=records,
       (error)=>{},()=>{
         this.Map2(this.jsExercises);
-        this.airtableService.getJsSubmissions().subscribe(records=>this.jsRecords=records,
-      (error)=>{},()=>this.js=this.findUnique(this.jsRecords));
+        this.airtableService.getJsSubmissions().subscribe(records=>{
+          this.jsRecords=records;
+          this.getDictionary(this.jsRecords);
+        },
+      (error)=>{},()=>this.recentJs=this.findUnique(this.jsRecords));
     });
 
     this.airtableService.getPythonExercises().subscribe(records=>this.pythonExercises=records,
       (error)=>{},()=> {
         this.Map2(this.pythonExercises);
-        this.airtableService.getPythonSubmissions().subscribe(records=>this.pythonRecords=records,
-      (error)=>{},()=>{this.python=this.findUnique(this.pythonRecords);});
+        this.airtableService.getPythonSubmissions().subscribe(records=> {
+          this.pythonRecords=records;
+          this.getDictionary(this.pythonRecords);
+        },
+      (error)=>{},()=>{this.recentPython=this.findUnique(this.pythonRecords);});
       });
 
     this.airtableService.getStudents().subscribe(records=>this.students=records,(error)=>{},()=>
@@ -63,8 +67,11 @@ export class DashboardComponent implements OnInit {
     this.airtableService.getHtmlExercises().subscribe(records=>this.htmlExercises=records,
       (error)=>{},()=>{
         this.Map2(this.htmlExercises);
-        this.airtableService.getHtmlSubmissions().subscribe(records=>this.htmlRecords=records,
-      (error)=>{},()=>this.html=this.findUnique(this.htmlRecords));
+        this.airtableService.getHtmlSubmissions().subscribe(records=> {
+          this.htmlRecords=records
+          this.getDictionary(this.htmlRecords);
+      },
+      (error)=>{},()=>this.recentHtml=this.findUnique(this.htmlRecords));
       });
   }
 
@@ -98,13 +105,6 @@ export class DashboardComponent implements OnInit {
   			let time=moment(records[i].fields["Submission Date & Time"]).fromNow(); 
   			let studentId=records[i].fields.Student[0];
         let exerciseName=this.exerciseNames[records[i].fields.Exercise[0]];
-
-        // if(this.jsTable[name] == undefined) {
-        //   this.jsTable[name]={};
-        // }
-
-        // this.jsTable[name][exerciseName]=1;
-
   			finalResult.push({	Name:name, Time:time, Id:studentId, ExerciseName:exerciseName});
   		}
   	}
@@ -154,7 +154,6 @@ export class DashboardComponent implements OnInit {
     if(this.showTable)
       this.showTable=false;
     else {
-      this.showStudentExerciseGrid();
       this.showTable=true;
     }
     console.log("eh");
@@ -174,22 +173,14 @@ export class DashboardComponent implements OnInit {
       if (this.studentExerciseGrid[studentName][exerciseName]!="approved") {
         if (approvalSatus == undefined)
           approvalSatus = "notapproved";
-        else
-          approvalSatus = "approved"
+        else if (approvalSatus == "Yes")
+          approvalSatus = "approved";
+        else if (approvalSatus == "No")
+          approvalSatus = "rejected";
 
         this.studentExerciseGrid[studentName][exerciseName] = approvalSatus;
       }
     }
-  }
-
-  showStudentExerciseGrid() {
-    this.getDictionary(this.pythonRecords);
-    this.getDictionary(this.htmlRecords);
-    this.getDictionary(this.jsRecords);
-  }
-
-  getStudentKeys(): Array<string> {
-    return Object.keys(this.studentNames);
   }
 
   getExerciseKeys(): Array<string> {

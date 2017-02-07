@@ -20,7 +20,9 @@ li:first-child
 .approved {
 	background-color: green;
 }
-
+.rejected {
+	background-color: red;
+}
 .cell {
 	height: 20px;
 	width: 20px;	
