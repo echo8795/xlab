@@ -1,5 +1,7 @@
 <div>
-	<button (click)=toggleTableView()>{{ showTable?"Hide Table View":"Show Table View" }}</button>
+	<div class="button-wrapper">
+		<button (click)=toggleTableView()>{{ showTable?"Hide Table View":"Show Table View" }}</button>
+	</div>
 	<div class="submission-data" *ngIf=!showTable>
 		<ul>
 			<h1 class="headings">Python Submissions</h1>
@@ -47,6 +49,7 @@
 			</li>
 		</ul>		
 	</div>
+
 	<table *ngIf=showTable border="1px">
 		<tr>
 			<td>
