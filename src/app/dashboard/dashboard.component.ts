@@ -99,11 +99,18 @@ export class DashboardComponent implements OnInit {
   	for(let i:number=0;i<records.length; i++) {
   		if(!dict[records[i].fields.Student]) {
   			dict[records[i].fields.Student]=true;
+        let zone="safe";
+        if (moment().diff(moment(records[i].fields["Submission Date & Time"]),'days') > 2) {
+          zone="warning";
+        }
+        if (moment().diff(moment(records[i].fields["Submission Date & Time"]),'days') > 6) {
+          zone="danger";
+        }
   			let name=this.studentNames[records[i].fields.Student];
   			let time=moment(records[i].fields["Submission Date & Time"]).fromNow(); 
   			let studentId=records[i].fields.Student[0];
         let exerciseName=this.exerciseNames[records[i].fields.Exercise[0]];
-  			finalResult.push({	Name:name, Time:time, Id:studentId, ExerciseName:exerciseName});
+  			finalResult.push({	Name:name, Time:time, Id:studentId, ExerciseName:exerciseName, Zone:zone});
   		}
   	}
   	return finalResult;
@@ -157,11 +164,13 @@ export class DashboardComponent implements OnInit {
   }
 
   getDictionary(records:Array<any>, exercises:Array<any>):void {
-
+    
+    let received:boolean;
     for (let i=0; i<records.length; i++) {
       let studentName = records[i].fields['Student'][0];
       let exerciseName = records[i].fields['Exercise'][0];
       let approvalSatus = records[i].fields['Approval Status'];
+
 
       if (this.studentExerciseGrid[studentName]===undefined) {
         this.studentExerciseGrid[studentName] = {};
@@ -169,7 +178,7 @@ export class DashboardComponent implements OnInit {
 
       if (this.studentExerciseGrid[studentName][exerciseName]!="approved") {
         if (approvalSatus == undefined)
-          approvalSatus = "notapproved";
+          approvalSatus = "pending";
         else if (approvalSatus == "Yes")
           approvalSatus = "approved";
         else if (approvalSatus == "No")
@@ -177,13 +186,6 @@ export class DashboardComponent implements OnInit {
         this.studentExerciseGrid[studentName][exerciseName] = approvalSatus;
       }
     }
-
-    // for all exercises (some way to know kaunsi exercises)
-
-
-    // for all the getStudents
-    // if exercise doesn't exist, but one exercise has been found earlier, all down below should have class dubious
-    let received:boolean;
     for(let i:number=0;i<this.students.length; i++){
       received=false;
       for (let j:number=0; j<exercises.length ;j++) {

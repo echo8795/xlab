@@ -4,4 +4,5 @@ export interface Record {
 	Time:string;
 	Id:string;
 	ExerciseName?:string;
+	Zone:string;
 }

@@ -3,17 +3,10 @@
 	display: flex;
 	justify-content: space-around;
 }
-
-.selected 
-{
-	background-color:#adadad;
+.submission-data ul {
+	list-style: none;
 }
-
-li:first-child
-{
-	cursor: pointer;
-}
-.notapproved {
+.pending {
 	background-color: yellow;
 }
 
@@ -29,4 +22,40 @@ li:first-child
 }
 .dubious {
 	background-color: pink;
+}
+.warning {
+	background-color: orange;
+}
+.danger {
+    background-color: orangered;
+}
+.safe {
+	background-color: lightgreen;
+}
+.warning.selected {
+	background-color: #ca8200;
+	color: white;
+	font-weight: bold;
+	border: 5px white dotted;
+}
+.danger.selected {
+    background-color: #d83a00;
+	color: white;
+	font-weight: bold;
+	border: 5px white dotted;
+}
+.safe.selected {
+	background-color: #5fc55f;
+	color: white;
+	font-weight: bold;
+	border: 5px white dotted;
+}
+.record {
+	margin: 10px;
+    padding: 15px;
+    line-height: 20px;
+    cursor: pointer;
+}
+.record ul {
+    list-style: none;	
 }
