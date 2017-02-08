@@ -2,7 +2,7 @@
 	<button (click)=toggleTableView()>{{ showTable?"Hide Table View":"Show Table View" }}</button>
 	<div class="submission-data" *ngIf=!showTable>
 		<ul>
-			<h1>Python Submissions</h1>
+			<h1 class="headings">Python Submissions</h1>
 			<li *ngFor="let record of recentPython" [ngClass]="record.Zone" class="record" [class.selected]="record.Name === selectedStudent">
 				<ul (click)=timeline(record.Id,record.Name)>
 					<li>
@@ -14,7 +14,7 @@
 			</li>
 		</ul>
 		<ul>
-			<h1>HTML/CSS Submissions</h1>
+			<h1 class="headings">HTML/CSS Submissions</h1>
 			<li *ngFor="let record of recentHtml" [ngClass]="record.Zone" class="record" [class.selected]="record.Name === selectedStudent">
 				<ul (click)=timeline(record.Id,record.Name)>
 					<li>
@@ -26,7 +26,7 @@
 			</li>
 		</ul>
 		<ul>
-			<h1>JS Submissions</h1>
+			<h1 class="headings">JS Submissions</h1>
 			<li *ngFor="let record of recentJs" [ngClass]="record.Zone" class="record" [class.selected]="record.Name === selectedStudent">
 				<ul (click)=timeline(record.Id,record.Name)>
 					<li>
@@ -37,17 +37,15 @@
 				</ul>
 			</li>
 		</ul>
-		<div *ngIf="studentSubmissions">
-			<h1>{{selectedStudent}}</h1>
-			<ul>
-				<li *ngFor="let submission of studentSubmissions" [ngClass]="submission['Approval Status'] ? (submission['Approval Status'] == 'Yes' ? 'approved' : 'rejected') : 'pending'" class="record">
-					<ul>
-						<li>{{submission["ExerciseName"]}}</li>
-						<li>{{submission["Submission Date & Time"] | date}} </li>
-					</ul>
-				</li>
-			</ul>
-		</div>
+		<ul *ngIf="studentSubmissions">
+			<h1 class="headings">{{selectedStudent}}</h1>
+			<li *ngFor="let submission of studentSubmissions" [ngClass]="submission['Approval Status'] ? (submission['Approval Status'] == 'Yes' ? 'approved' : 'rejected') : 'pending'" class="record">
+				<ul>
+					<li>{{submission["ExerciseName"]}}</li>
+					<li>{{submission["Submission Date & Time"] | date}} </li>
+				</ul>
+			</li>
+		</ul>		
 	</div>
 	<table *ngIf=showTable border="1px">
 		<tr>
