@@ -30,7 +30,6 @@ export class DashboardComponent implements OnInit {
   studentExerciseGrid:Object;
   exerciseKeys:Array<string>;
 
-
   constructor(private airtableService:AirtableService) { 
     this.exerciseNames={};
     this.showTable=false;
@@ -43,7 +42,7 @@ export class DashboardComponent implements OnInit {
         this.Map2(this.jsExercises);
         this.airtableService.getJsSubmissions().subscribe(records=>{
           this.jsRecords=records;
-          this.getDictionary(this.jsRecords);
+          this.getDictionary(this.jsRecords,this.jsExercises);
         },
       (error)=>{},()=>this.recentJs=this.findUnique(this.jsRecords));
     });
@@ -53,7 +52,7 @@ export class DashboardComponent implements OnInit {
         this.Map2(this.pythonExercises);
         this.airtableService.getPythonSubmissions().subscribe(records=> {
           this.pythonRecords=records;
-          this.getDictionary(this.pythonRecords);
+          this.getDictionary(this.pythonRecords,this.pythonExercises);
         },
       (error)=>{},()=>{this.recentPython=this.findUnique(this.pythonRecords);});
       });
@@ -69,7 +68,7 @@ export class DashboardComponent implements OnInit {
         this.Map2(this.htmlExercises);
         this.airtableService.getHtmlSubmissions().subscribe(records=> {
           this.htmlRecords=records
-          this.getDictionary(this.htmlRecords);
+          this.getDictionary(this.htmlRecords,this.htmlExercises);
       },
       (error)=>{},()=>this.recentHtml=this.findUnique(this.htmlRecords));
       });
@@ -101,7 +100,6 @@ export class DashboardComponent implements OnInit {
   		if(!dict[records[i].fields.Student]) {
   			dict[records[i].fields.Student]=true;
   			let name=this.studentNames[records[i].fields.Student];
-
   			let time=moment(records[i].fields["Submission Date & Time"]).fromNow(); 
   			let studentId=records[i].fields.Student[0];
         let exerciseName=this.exerciseNames[records[i].fields.Exercise[0]];
@@ -158,7 +156,7 @@ export class DashboardComponent implements OnInit {
     console.log("eh");
   }
 
-  getDictionary(records:Array<any>):void {
+  getDictionary(records:Array<any>, exercises:Array<any>):void {
 
     for (let i=0; i<records.length; i++) {
       let studentName = records[i].fields['Student'][0];
@@ -176,14 +174,34 @@ export class DashboardComponent implements OnInit {
           approvalSatus = "approved";
         else if (approvalSatus == "No")
           approvalSatus = "rejected";
-
         this.studentExerciseGrid[studentName][exerciseName] = approvalSatus;
+      }
+    }
+
+    // for all exercises (some way to know kaunsi exercises)
+
+
+    // for all the getStudents
+    // if exercise doesn't exist, but one exercise has been found earlier, all down below should have class dubious
+    let received:boolean;
+    for(let i:number=0;i<this.students.length; i++){
+      received=false;
+      for (let j:number=0; j<exercises.length ;j++) {
+        if(this.studentExerciseGrid[this.students[i]['id']]) {
+          if (this.studentExerciseGrid[this.students[i]['id']][exercises[j]['id']] != undefined) {
+           received=true;
+          }
+          else {
+            if (received) {
+              this.studentExerciseGrid[this.students[i]['id']][exercises[j]['id']] = "dubious"
+            }
+          }
+        }
       }
     }
   }
 
   getExerciseKeys(): Array<string> {
-    //seqence karke bhejo
     return Object.keys(this.exerciseNames);
   }
 }

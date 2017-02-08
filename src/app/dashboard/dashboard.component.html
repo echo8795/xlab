@@ -83,7 +83,9 @@
 			<td>
 				{{exerciseNames[exercise['id']]}}
 			</td>
-			<td *ngFor="let student of students" [ngClass]="studentExerciseGrid[student['id']][exercise['id']]" class="cell">
+			<td *ngFor="let student of students"
+				[ngClass]="studentExerciseGrid[student['id']][exercise['id']]"
+				class="cell">
 			</td>
 		</tr>
 
