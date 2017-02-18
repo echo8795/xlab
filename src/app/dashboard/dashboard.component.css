@@ -15,17 +15,17 @@
 }
 
 .approved {
-	background-color: green;
+	background-color: #05b505;
 }
 .rejected {
-	background-color: red;
+	background-color: #ff2e2e;
 }
 .cell {
 	height: 20px;
 	width: 20px;	
 }
 .dubious {
-	background-color: pink;
+	background-color: palegreen;
 }
 .warning {
 	background-color: orange;

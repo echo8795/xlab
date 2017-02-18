@@ -49,25 +49,24 @@
 			</li>
 		</ul>		
 	</div>
-
+	<div class="table-view">
 	<table *ngIf=showTable border="1px">
 		<tr>
 			<td>
-				JS
+				HTML
 			</td>
 			<td *ngFor="let student of students">
 				{{studentNames[student['id']]}}
 			</td>
 		</tr>
 
-		<tr *ngFor="let exercise of jsExercises">
+		<tr *ngFor="let exercise of htmlExercises">
 			<td>
 				{{exerciseNames[exercise['id']]}}
 			</td>
 			<td *ngFor="let student of students" [ngClass]="studentExerciseGrid[student['id']][exercise['id']]" class="cell">
 			</td>
 		</tr>
-
 	</table>
 	<table *ngIf=showTable border="1px">
 		<tr>
@@ -88,19 +87,18 @@
 				class="cell">
 			</td>
 		</tr>
-
 	</table>
 	<table *ngIf=showTable border="1px">
 		<tr>
 			<td>
-				HTML
+				JS
 			</td>
 			<td *ngFor="let student of students">
 				{{studentNames[student['id']]}}
 			</td>
 		</tr>
 
-		<tr *ngFor="let exercise of htmlExercises">
+		<tr *ngFor="let exercise of jsExercises">
 			<td>
 				{{exerciseNames[exercise['id']]}}
 			</td>
@@ -108,4 +106,5 @@
 			</td>
 		</tr>
 	</table>
+	</div>
 </div>
