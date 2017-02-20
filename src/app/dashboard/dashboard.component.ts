@@ -59,7 +59,6 @@ export class DashboardComponent implements OnInit {
 
     this.airtableService.getStudents().subscribe(records=>this.students=records,(error)=>{},()=>
       { 
-        console.log(this.students);
         this.studentNames=this.Map1(this.students);
       });
 
@@ -149,7 +148,6 @@ export class DashboardComponent implements OnInit {
       });
 
       for(let i:number=0; i<this.studentSubmissions.length; i++) {
-        console.log(this.studentSubmissions[i]["Exercise"]);
         this.studentSubmissions[i]["ExerciseName"]=this.exerciseNames[this.studentSubmissions[i]["Exercise"][0]];
       }  
     }
@@ -160,7 +158,6 @@ export class DashboardComponent implements OnInit {
     else {
       this.showTable=true;
     }
-    console.log("eh");
   }
 
   getDictionary(records:Array<any>, exercises:Array<any>):void {
