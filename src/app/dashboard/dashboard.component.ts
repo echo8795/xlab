@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AirtableService } from '../airtable.service';
 import { Record } from '../interfaces/record';
-
 import * as moment from 'moment';
+import { AirtableService } from '../airtable.service';
 
 @Component({
-  selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  providers: [ AirtableService]
 })
 
 export class DashboardComponent implements OnInit {
@@ -30,13 +27,23 @@ export class DashboardComponent implements OnInit {
   studentExerciseGrid:Object;
   exerciseKeys:Array<string>;
 
+  ngOnInit() {
+
+  }
+
   constructor(private airtableService:AirtableService) { 
     this.exerciseNames={};
     this.showTable=false;
     this.studentExerciseGrid={};
-   }
-  
-  ngOnInit() {
+    this.recentPython=[{"Name": "Abhishek", "Zone": "123", "Time": "", Id: ""}]
+   //  this.init();
+   // }
+
+   // init() {
+     console.log("on init");
+   // }
+
+   // ngOnChanges() {
     this.airtableService.getJsExercises().subscribe(records=>this.jsExercises=records,
       (error)=>{},()=>{
         this.Map2(this.jsExercises);
@@ -54,8 +61,11 @@ export class DashboardComponent implements OnInit {
           this.pythonRecords=records;
           this.getDictionary(this.pythonRecords,this.pythonExercises);
         },
-      (error)=>{},()=>{this.recentPython=this.findUnique(this.pythonRecords);});
+      (error)=>{},()=>{
+        this.recentPython=this.findUnique(this.pythonRecords);
+        console.log('hurray!', this.recentPython);
       });
+    });
 
     this.airtableService.getStudents().subscribe(records=>this.students=records,(error)=>{},()=>
       { 

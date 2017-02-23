@@ -5,10 +5,11 @@
 	<div class="submission-data" *ngIf=!showTable>
 		<ul>
 			<h1 class="headings">Python Submissions</h1>
+			{{recentPython}}
 			<li *ngFor="let record of recentPython" [ngClass]="record.Zone" class="record" [class.selected]="record.Name === selectedStudent">
 				<ul (click)=timeline(record.Id,record.Name)>
 					<li>
-						{{	record.Name }}
+						{{ record.Name }}
 					</li>
 					<li>{{ record.ExerciseName }}</li>
 					<li>{{ record.Time  }}</li>

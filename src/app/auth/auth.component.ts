@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+
 
 declare const gapi: any;
 
@@ -10,7 +12,7 @@ declare const gapi: any;
 export class AuthComponent implements OnInit {
 
 	profile:any;
-  constructor() { }
+  constructor(private router:Router) { }
 
   ngOnInit() { }
   ngAfterViewInit() {
@@ -25,7 +27,12 @@ export class AuthComponent implements OnInit {
   }
 
   onSignIn(googleUser) {
-	  console.log(googleUser.getBasicProfile());
+    if(googleUser)
+    {
+	    console.log(googleUser.getBasicProfile());
+      this.router.navigate(['/dashboard']);
+    }
+    console.log("e");
   }
 
 	signOut() {
@@ -33,5 +40,6 @@ export class AuthComponent implements OnInit {
 	  auth2.signOut().then(function () {
 	  	console.log('User signed out.');
     });
+    this.router.navigate(['/']);
 	}
 }
